@@ -26,11 +26,17 @@ Please ensure that you have the modules enable which are required by the particu
 Almost scripts carry the suffix ".z" which referes to the internal scripting language zeta
 
 Input data format for both phaistos and almost is a space or tab separated text file with the following columns:
+
 1 - Alignment condition identifier
+
 2 - Residue index of first atom
+
 3 - Atom name of first atom
+
 4 - Residue index of second atom
+
 5 - Atom name of second atom
+
 6 - value of observed RDC
  
 
