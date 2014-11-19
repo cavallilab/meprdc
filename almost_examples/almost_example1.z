@@ -1,0 +1,72 @@
+//
+// Example 1 for Almost branch 2.2
+// Demonstrates how to run a simple restrained simulation which also involves patching of disulfide bonds
+//
+
+
+// load nomenclature database for Amber03 forcefield
+MDB = mdb.MDB("a03.mdb");
+// load minimized starting structure
+// check almost mini.z script on how to create a minimized structure
+PDB = pdb.pdb("mini.pdb_mini.pdb");
+// rename histidine residues to conform with Amber03 nomenclature
+PDB.rename_frag("HIS", "HIE");
+// create new protein called "lyso"
+p = molecules.protein("lyso");
+// create new molecules instance
+m = molecules.molecules();
+// build protein from loaded pdb (first model and first chain) using Amber03 database
+p.build_missing(PDB[0][0],MDB);
+
+// patch cysteines involved in disulfide bonds
+p.disu_bond(p.fragment_name(29),p.fragment_name(114), MDB);
+p.disu_bond(p.fragment_name(79),p.fragment_name(63), MDB);
+p.disu_bond(p.fragment_name(93),p.fragment_name(75), MDB);
+p.disu_bond(p.fragment_name(5),p.fragment_name(126), MDB);
+
+m.add_protein(p);
+
+
+// Initialize Maximum Entropy RDC restraining object
+
+// use molecules object from above (m), use prefix "Amber0_" for log-files, and temperature is 300K
+pme0 = const.pmerdc(m,"Amber0_",300);
+// Load RDC data from "DHPCDMPC.dat", which is attributed to "lyso" protein in molecule, m
+pme0.load_table("DHPCDMPC.dat","lyso");
+// initial guess of s*Dmax  
+pme0.set_dmax(35.);
+// set \Delta t from eq 8
+pme0.set_dt(pme0.dt()/10.0);
+// automatically estimate s
+pme0.set_autoscale(true);
+
+// copy the lines above to create more instances and include more datasets e.g. pme1, pme2 ... etc
+
+
+
+// initialize restrain collection and add our RDC instance defined above
+cc = const.collection();
+const.add_pmerdc(cc,pme0);
+// add other instances here as well
+
+
+// setup simulation in Amber03 forcefield with generalized Born implicit solvation
+opts = md.amber_defaults(md.GB,md.BERE);
+opts.elec_cutoff = energy.TRUNC;
+opts.vdw_cutoff = energy.TRUNC;
+opts.solv = energy.GB;
+opts.temp = 300;
+opts.nprint = 5;
+opts.nsave = 2000;
+opts.steps = 10000000;
+opts.seed = sys.time()+almost.rank();
+
+opts.trj = "run_rdc_"+zeta.istr(almost.rank())+".dcd";
+
+print opts;
+
+
+MD = md.const_md(cc);
+MD.run(m,opts,MDB);
+
+

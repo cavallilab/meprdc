@@ -19,15 +19,17 @@ svn checkout http://svn.code.sf.net/p/phaistos/code/trunk phaistos
 note that the _inference_ module should be manually enabled via CMAKE, see phaistos manual for further details.
 Please ensure that you have the modules enable which are required by the particular configuration file you wish to use - this information is available in the configuration file of interest. 
 
+## Future plans
+- Implementation of a collective variable for PLUMED2
+
 ## Details 
 Almost scripts carry the suffix ".z" which referes to the internal scripting language zeta
 
-phaistos configuration files carry the suffix ".config".
  
 
 ## Current limitations 
 
-The phaistos suite currently only handles proteins and only single chains.
+The phaistos suite currently only handles proteins and only single chains. The phaistos example does not allow for automated estimation of the degree of alignment, s.
 
 
 

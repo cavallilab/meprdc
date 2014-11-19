@@ -1,0 +1,113 @@
+//
+// Example 2 for Almost branch 2.2
+// Demonstrates how to an estimation of the marginal distribution of magnetic field orientations, compute the corresponding Saupe tensor and compare it to a Tensor computed using Singular Value Decomposition.
+//
+// how to run
+// almost -f almost_example2.z <RDC DATAFILE> <OUTPUT NAME> 
+
+
+function correl(v1,v2){
+// Correlation coefficient for saupe matrices
+  X = 0.0;
+  Y = 0.0;
+  XX =0.0;
+  YY =0.0;
+  XY = 0.0;
+  for(i=0;i<3;i++){
+    for(j=0;j<3;j++){
+      XY += v1[i][j]*v2[i][j];
+      X  += v1[i][j];
+      XX += v1[i][j]*v1[i][j];
+      Y  += v2[i][j];
+      YY += v2[i][j]*v2[i][j];
+    }
+  }
+  n= 9; 
+  //  print (n*XY-X*Y),sqrt((n*XX-X*X)*(n*YY-Y*Y)),n*XX;
+  return (n*XY-X*Y)/math.sqrt((n*XX-X*X)*(n*YY-Y*Y));
+}
+
+
+function frob(v1,v2){
+// Frobenius norm for saupe matrices
+  X = 0.0;
+  for(i=0;i<3;i++){
+    for(j=0;j<3;j++){
+      d = v1[i][j]-v2[i][j];
+      X += d*d;
+    }
+  }
+  return math.sqrt(X);
+}
+
+MDB = mdb.MDB("a03.mdb");
+
+// load minimized structure
+PDB = pdb.pdb("mini_a03.pdb");
+p = molecules.protein("GB3");
+
+// select and build first chain of first model
+p.build(PDB[0][0],MDB);
+
+m = molecules.molecules();
+m.add_protein(p);
+coor = molecules.mols_coor(m);
+
+// datafile 
+ali = sys.argv(1);
+
+
+rdc = const.svdrdc(m,1); 
+rdc.load_table(ali);
+svd = rdc.print_rdc(coor);
+
+print svd;
+
+
+
+pme = const.pmerdc(m,sys.argv(2),300);
+print "adding",ali;
+pme.load_table(ali,"GB3");
+pme.set_dmax(46);
+pme.set_dt(0.0001);
+pme.set_autoscale(true);
+pme.set_naverage(50000);
+
+
+
+f = file("saupe_"+sys.argv(2)+".dat","w");
+
+// do 200 sweeps with estimation of s
+for(i=0;i<100;i++){
+  for(j=0;j<100000;j++){
+    pme.energy(coor);
+
+  }
+
+  v = pme.calc_pme_saupe(coor,1000000); 
+  print 
+    v[0][0],v[0][1],v[0][2],
+    v[1][0],v[1][1],v[1][2],
+    v[2][0],v[2][1],v[2][2] to f;
+  print "Correlation", correl(svd,v),frob(svd,v);
+}
+
+
+pme.set_autoscale(false);
+
+// do 200 sweeps without estimation of s
+for(i=0;i<10;i++){
+  for(j=0;j<100000;j++){
+    pme.energy(coor);
+
+  }
+
+  v = pme.calc_pme_saupe(coor,1000000);  
+  print 
+    v[0][0],v[0][1],v[0][2],
+    v[1][0],v[1][1],v[1][2],
+    v[2][0],v[2][1],v[2][2] to f;
+
+  print "Correlation", correl(svd,v),frob(svd,v);
+}
+
