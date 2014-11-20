@@ -4,7 +4,7 @@ This repository is a container for scripts (for "Almost" http://open-almost.org/
 Please note that this respository is currently being subject to change, however, previous revisions will be stored for reference.
 
 ## Prerequisites  
-A working installation of almost (from sourceforce branch 2.2)
+A working installation of almost (from sourceforce branch 2.2), it should be compiled with MPI and LAPACK
 Check out the latest version from the Sourceforge repository:
 ```
 svn checkout http://sourceforge.net/p/almost/code/HEAD/tree/branches/almost-2.2 almost
