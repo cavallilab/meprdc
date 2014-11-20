@@ -34,7 +34,7 @@ pme0 = const.pmerdc(m,"Amber0_",300);
 // Load RDC data from "DHPCDMPC.dat", which is attributed to "lyso" protein in molecule, m
 pme0.load_table("DHPCDMPC.dat","lyso");
 // initial guess of s*Dmax  
-pme0.set_dmax(35.);
+pme0.set_dmax(35.0);
 // set \Delta t from eq 8
 pme0.set_dt(pme0.dt()/10.0);
 // automatically estimate s
