@@ -8,8 +8,12 @@ A working installation of almost (from sourceforce branch 2.2), it should be com
 Check out the latest version from the Sourceforge repository:
 ```
 svn checkout http://sourceforge.net/p/almost/code/HEAD/tree/branches/almost-2.2 almost
-```
 
+cd almost/
+
+make CXX=mpiCC CC=mpicc CXXFLAGS="-O3 -ffast-math -fomit-frame-pointer -DALM_MPI -DWITH_LAPACK -llapack"
+
+```
 _OR_
 
 A working installation of phaistos. Check out the latest version from the Sourceforge respository:
