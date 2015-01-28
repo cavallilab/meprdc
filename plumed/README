@@ -1,0 +1,56 @@
+Notes:
+Only tested with gromacs (5.0.4 and 4.6.7)
+
+please familiarize yourself with plumed2 if you are not already.
+
+Installation:
+
+Make sure you have a copy of PLUMED2 and your favorite (compatiable) MD framework on your system, and they are patched, compiled and linked.
+
+copy MEPRDC.cpp to your <PLUMED2>/src/colvar/-folder
+
+recompile plumed2. recompile your md-framework.
+
+use:
+
+setup and prepare your MD simulation as you would normally.
+
+create a plumed.dat file. using the MEPRDC collective varible and a restraint with slope 1:
+
+example with five RDC restraints none of which are kept aside in a test-set:
+
+--START-plumed.dat--
+
+MEPRDC ...
+ATOMS1=37,38 COUPLING1=13.8 TESTSET1=0
+ATOMS2=58,59 COUPLING2=11.6 TESTSET2=0
+ATOMS3=80,81 COUPLING3=-1.5 TESTSET3=0
+ATOMS4=99,100 COUPLING4=7.6 TESTSET4=0
+ATOMS5=115,116 COUPLING5=-4.8 TESTSET5=0
+WRITE_RDC
+OUTPUT_PREFIX=MEPOUTPUT
+DMAXS=50
+DT=0.0001
+NAVERAGE=50
+NAVEPS=100
+SEED=24
+LABEL=nh
+... MEPRDC
+rdce: RESTRAINT ARG=nh KAPPA=0. SLOPE=1.0 AT=0
+
+--END-plumed.dat--
+
+THE ATOM/COUPLING/TESTSET lines specifies the experimental RDC values between atom pairs and a flag whether they are used for estimation (0) or kept aside for (1) for computing a Qfree.
+WRITE_RDC is a flag which determines if predicted RDCs and Lagrange multipliers (Lambda) are outputted to a file (with prefix OUTPUT_PREFIX) for every estimationstep.
+DMAXS specifies the initial value f the product between Dmax and s (the degree of alignment)
+DT is the \Delta t 'learning rate' or step-size in Lagrange space during estimation.
+NAVERAGE specifies how many MD/MC steps inbetween saving statistics for estimation of the parameters s and Lambda
+NAVEPS specifies how many counts of the used pr MPI process pr estimation step
+SEED is the random seed for the pseudo random number engine (mersenne twister if compiled with boost) if multiple MPI proceess are run the seed will be: SEED+mpi_rank.
+LABEL is used to name the restrain instance.
+if GROMACS is being used the ATOMS, COUPLING, TESTSET lines can be generated from a toplogy and a RDC-table format file using the supplied python script: make_plumed_rdc.py.
+
+start md with plumed.dat as input. for gromacs this is done by using the -plumed argument, for mdrun.
+
+if data from multiple alignment media is available simply create a restraint and MEPRDC instance for each dataset in the same file (with different labels) and run as above
+
