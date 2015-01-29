@@ -29,7 +29,7 @@ A working installation of a MD framework supported by PLUMED2 and linked to it. 
 
 ## Future plans
 
-- OpenMP/MPI hybrid parrallelization is not tested!
+- OpenMP/MPI hybrid parrallelization for the PLUMED2 plugin is not tested! but should work.
 
 ## Details 
 Almost scripts carry the suffix ".z" which referes to the internal scripting language zeta
