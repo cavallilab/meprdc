@@ -1,5 +1,5 @@
 # MEPRDC
-This repository is a container for scripts (for "Almost" http://open-almost.org/) and configuration files (for "phaistos" http://www.phaistos.org/) which demonstrates the use of Residual Dipolar Coupling data in molecular simulations in a manner consistent with the Maximum Entropy principle. There's also a collective variable for PLUMED2 for use with multiple MD frameworks including gromacs, amber and namd. The exact details of the method is described in a manuscript submitted for publication. A preprint should appear here ASAP. 
+This repository is a container for scripts (for "Almost" http://open-almost.org/) and configuration files (for "phaistos" http://www.phaistos.org/) which demonstrates the use of Residual Dipolar Coupling data in molecular simulations in a manner consistent with the Maximum Entropy principle. There's also a collective variable for PLUMED2 for use with multiple MD frameworks including gromacs, amber and namd. The exact details of the method may be found the our publication: http://pubs.acs.org/doi/abs/10.1021/jacs.5b01289
 
 Please note that this respository is currently being subject to change, however, previous revisions are stored for reference.
 
